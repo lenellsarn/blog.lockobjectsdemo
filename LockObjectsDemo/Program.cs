@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,14 +19,21 @@ namespace LockObjectsDemo
 
 			var service = new MyService();
 
-			Console.WriteLine("[WITH LOCK] 4 requests for the same ticket \"TicketId1\"");
+			Console.WriteLine("[WITHOUT LOCK] 8 simultanous requests for 2 tickets \"TicketId1\" and \"TicketId2\"");
 
-			var task1 = service.LockAndStoreUniqueValue(1200, "Person1", "TicketId1");
-			var task2 = service.LockAndStoreUniqueValue(800, "Person2", "TicketId1");
-			var task3 = service.LockAndStoreUniqueValue(500, "Person3", "TicketId1");
-			var task4 = service.LockAndStoreUniqueValue(100, "Person4", "TicketId1");
+			Random random = new Random();
 
-			await Task.WhenAll(new Task[] { task1, task2, task3, task4 });
+			var tasks = new List<Task>();
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Olle", "TicketId1"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Anna", "TicketId1"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Pelle", "TicketId1"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Greta", "TicketId1"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Göran", "TicketId2"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Karin", "TicketId2"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Anders", "TicketId2"));
+			tasks.Add(service.DoNotLockAndStoreUniqueValue(random.Next(100, 1200), "Lina", "TicketId2"));
+
+			await Task.WhenAll(tasks);
 
 			Console.WriteLine("\nResults:");
 
@@ -37,14 +45,19 @@ namespace LockObjectsDemo
 			Console.WriteLine("\nEmptying repository\n");
 			service.EmptyRepository();
 
-			Console.WriteLine("[WITHOUT LOCK] 4 requests for the same ticket \"TicketId1\"");
+			Console.WriteLine("[WITH LOCK] 8 simultanous requests for 2 tickets \"TicketId1\" and \"TicketId2\"");
 
-			var task5 = service.DoNotLockAndStoreUniqueValue(1200, "Person1", "TicketId1");
-			var task6 = service.DoNotLockAndStoreUniqueValue(800, "Person2", "TicketId1");
-			var task7 = service.DoNotLockAndStoreUniqueValue(500, "Person3", "TicketId1");
-			var task8 = service.DoNotLockAndStoreUniqueValue(100, "Person4", "TicketId1");
+			tasks = new List<Task>();
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Olle", "TicketId1"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Anna", "TicketId1"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Pelle", "TicketId1"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Greta", "TicketId1"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Göran", "TicketId2"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Karin", "TicketId2"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Anders", "TicketId2"));
+			tasks.Add(service.LockAndStoreUniqueValue(random.Next(100, 1200), "Lina", "TicketId2"));
 
-			await Task.WhenAll(new Task[] { task5, task6, task7, task8 });
+			await Task.WhenAll(tasks);
 
 			Console.WriteLine("\nResults:");
 
