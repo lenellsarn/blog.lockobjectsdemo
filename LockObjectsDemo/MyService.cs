@@ -11,7 +11,7 @@ namespace LockObjectsDemo
 
 		public async Task LockAndStoreUniqueValue(int sleep, string value, string keyword)
 		{
-			await Task.Run(() => 
+			await Task.Run(() =>
 			{
 				KeywordLocker.WrapInLock(() => StoreUniqueValue(sleep, value, keyword), keyword);
 			});
@@ -45,6 +45,30 @@ namespace LockObjectsDemo
 			{
 				return KeywordLocker.WrapInLock(() => SleepAndReturnInput(sleep, input), keyword);
 			});
+
+
+			//return KeyWordLocker.WrapInLock(() => SleepAndReturnInput(sleep, input), keyword);
+
+			//var lockObject = LockList.GetOrAdd(keyword, new object());
+			//lock (lockObject)
+			//{
+			//	try
+			//	{
+			//		return Task.Run(() =>
+			//		{
+			//			Thread.Sleep(sleep);
+			//			return input;
+			//		});
+			//	}
+			//	finally
+			//	{
+			//		LockList.TryRemove(keyword, out _);
+			//	}
+			//}
+
+			//KeywordLocker.LockAction(keyword, () => { await 
+			//	SleepAndReturnInput(sleep, input)});
+
 		}
 
 		private string SleepAndReturnInput(int sleep, string input)
